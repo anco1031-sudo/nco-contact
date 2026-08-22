@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e3a5f;
+  --color-primary-light: #2d5986;
+  --color-accent: #c9a227;
+  --color-accent-light: #d4b44a;
+  --color-muted: #64748b;
+  --color-card-bg: #ffffff;
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+  color: #1e293b;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.table-row-hover:hover {
+  background-color: #f0f7ff;
+}
+
+.badge-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+.badge-approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.badge-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

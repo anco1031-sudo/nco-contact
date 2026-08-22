@@ -31,10 +31,3 @@ export interface Request {
   reviewed_at: string | null;
   created_at: string;
 }
-
-export interface UserRole {
-  id: string;
-  user_id: string;
-  role: string;
-  created_at: string;
-}
