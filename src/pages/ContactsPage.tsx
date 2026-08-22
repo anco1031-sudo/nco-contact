@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Contact } from "../lib/types";
 import type { User } from "@supabase/supabase-js";
-import { RANKS, UNITS, COMPANIES } from "../lib/constants";
-import {
-  Search, Filter, Phone, MessageCircle,
-  ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send,
+import { RANKS, UNITS, COMPANIES } from "../lib/constants";import { Search, Filter, Phone, MessageCircle,
+  ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send, UserPlus,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -59,12 +58,20 @@ export default function ContactsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#1e3a5f] flex items-center gap-3">
-          <Users className="text-[#c9a227]" size={32} />
-          รายชื่อเพื่อน ๆ
-        </h1>
-        <p className="mt-1 text-[#64748b] text-sm">เพื่อนๆ รุ่น 1333</p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold text-[#1e3a5f] flex items-center gap-3">
+            <Users className="text-[#c9a227]" size={32} />
+            รายชื่อเพื่อน ๆ
+          </h1>
+          <p className="mt-1 text-[#64748b] text-sm">เพื่อนๆ รุ่น 1333</p>
+        </div>
+        <Link
+          to="/request"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c9a227] text-[#1e3a5f] font-bold rounded-xl text-sm hover:bg-[#d4b44a] transition-colors shadow-sm self-start"
+        >
+          <UserPlus size={16} /> ขอเพิ่มรายชื่อ
+        </Link>
       </div>
 
       {/* Success message */}

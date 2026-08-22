@@ -7,6 +7,7 @@ import NewsPage from "./pages/NewsPage";
 import BoardPage from "./pages/BoardPage";
 import SurveysPage from "./pages/SurveysPage";
 import AdminPage from "./pages/AdminPage";
+import RequestPage from "./pages/RequestPage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/news" element={<NewsPage />} />
           <Route path="/surveys" element={<SurveysPage />} />
           <Route path="/board" element={<BoardPage />} />
+          <Route path="/request" element={<RequestPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>
