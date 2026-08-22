@@ -5,7 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import { RANKS, UNITS, COMPANIES } from "../lib/constants";
 import {
   Search, Filter, Phone, MessageCircle,
-  ChevronDown, ChevronUp, X, Users, Pencil, Loader2,
+  ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send,
 } from "lucide-react";
 
 export default function ContactsPage() {
@@ -16,7 +16,9 @@ export default function ContactsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [requestContact, setRequestContact] = useState<Contact | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -65,12 +67,29 @@ export default function ContactsPage() {
         <p className="mt-1 text-[#64748b] text-sm">เพื่อนๆ รุ่น 1333</p>
       </div>
 
-      {/* Edit form modal */}
+      {/* Success message */}
+      {requestSent && (
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-2xl text-sm text-green-700 flex items-center gap-2">
+          <CheckCircle2 size={16} /> ส่งคำขอแก้ไขเรียบร้อยแล้ว! รอ admin อนุมัติ
+          <button onClick={() => setRequestSent(false)} className="ml-auto text-green-500 hover:text-green-700"><X size={14} /></button>
+        </div>
+      )}
+
+      {/* Edit modal (login) */}
       {editingContact && (
         <EditContactModal
           contact={editingContact}
           onClose={() => setEditingContact(null)}
           onSaved={() => { setEditingContact(null); fetchContacts(); }}
+        />
+      )}
+
+      {/* Request edit modal (not login) */}
+      {requestContact && (
+        <EditRequestModal
+          contact={requestContact}
+          onClose={() => setRequestContact(null)}
+          onSent={() => { setRequestContact(null); setRequestSent(true); }}
         />
       )}
 
@@ -162,7 +181,7 @@ export default function ContactsPage() {
                   <th className="text-left px-4 py-3 font-semibold text-[#1e3a5f]">กองร้อย</th>
                   <th className="text-left px-4 py-3 font-semibold text-[#1e3a5f]">ที่ทำงาน</th>
                   <th className="text-left px-4 py-3 font-semibold text-[#1e3a5f]">ติดต่อ</th>
-                  {user && <th className="text-right px-4 py-3 font-semibold text-[#1e3a5f]">จัดการ</th>}
+                  <th className="text-right px-4 py-3 font-semibold text-[#1e3a5f]">จัดการ</th>
                 </tr>
               </thead>
               <tbody>
@@ -190,16 +209,23 @@ export default function ContactsPage() {
                         )}
                       </div>
                     </td>
-                    {user && (
-                      <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right">
+                      {user ? (
                         <button
                           onClick={() => setEditingContact(c)}
                           className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#1e3a5f] text-white rounded-lg text-xs font-medium hover:bg-[#2d5986] transition-colors"
                         >
                           <Pencil size={12} /> แก้ไข
                         </button>
-                      </td>
-                    )}
+                      ) : (
+                        <button
+                          onClick={() => setRequestContact(c)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 border border-[#c9a227] text-[#c9a227] rounded-lg text-xs font-medium hover:bg-[#c9a227]/10 transition-colors"
+                        >
+                          <Send size={12} /> ขอแก้ไข
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -216,12 +242,13 @@ export default function ContactsPage() {
                     <span className="font-medium">{c.first_name} {c.last_name}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    {user && (
-                      <button
-                        onClick={() => setEditingContact(c)}
-                        className="p-1.5 text-[#1e3a5f] hover:bg-[#1e3a5f]/10 rounded-lg transition-colors"
-                      >
+                    {user ? (
+                      <button onClick={() => setEditingContact(c)} className="p-1.5 text-[#1e3a5f] hover:bg-[#1e3a5f]/10 rounded-lg transition-colors">
                         <Pencil size={14} />
+                      </button>
+                    ) : (
+                      <button onClick={() => setRequestContact(c)} className="p-1.5 text-[#c9a227] hover:bg-[#c9a227]/10 rounded-lg transition-colors">
+                        <Send size={14} />
                       </button>
                     )}
                     <button onClick={() => setExpandedRow(expandedRow === c.id ? null : c.id)} className="text-[#94a3b8]">
@@ -260,6 +287,7 @@ export default function ContactsPage() {
   );
 }
 
+/* ========== Edit Contact Modal (login) ========== */
 function EditContactModal({ contact, onClose, onSaved }: { contact: Contact; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState({
     rank: contact.rank, first_name: contact.first_name, last_name: contact.last_name,
@@ -324,5 +352,137 @@ function EditContactModal({ contact, onClose, onSaved }: { contact: Contact; onC
         </form>
       </div>
     </div>
+  );
+}
+
+/* ========== Edit Request Modal (not login) ========== */
+function EditRequestModal({ contact, onClose, onSent }: { contact: Contact; onClose: () => void; onSent: () => void }) {
+  const [form, setForm] = useState({
+    rank: contact.rank, first_name: contact.first_name, last_name: contact.last_name,
+    unit: contact.unit, company: contact.company, workplace: contact.workplace || "",
+    phone: contact.phone || "", line_id: contact.line_id || "", notes: contact.notes || "",
+  });
+  const [requesterName, setRequesterName] = useState("");
+  const [requesterPhone, setRequesterPhone] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!requesterName.trim()) {
+      setError("กรุณากรอกชื่อผู้ขอแก้ไข");
+      return;
+    }
+    setSaving(true);
+    setError("");
+
+    // เก็บเฉพาะข้อมูลที่แก้ไข
+    const editData: Record<string, string> = {};
+    if (form.rank !== contact.rank) editData.rank = form.rank;
+    if (form.first_name !== contact.first_name) editData.first_name = form.first_name;
+    if (form.last_name !== contact.last_name) editData.last_name = form.last_name;
+    if (form.unit !== contact.unit) editData.unit = form.unit;
+    if (form.company !== contact.company) editData.company = form.company;
+    if (form.workplace !== (contact.workplace || "")) editData.workplace = form.workplace;
+    if (form.phone !== (contact.phone || "")) editData.phone = form.phone;
+    if (form.line_id !== (contact.line_id || "")) editData.line_id = form.line_id;
+    if (form.notes !== (contact.notes || "")) editData.notes = form.notes;
+
+    if (Object.keys(editData).length === 0) {
+      setError("ยังไม่มีข้อมูลที่แก้ไข");
+      setSaving(false);
+      return;
+    }
+
+    const { error: err } = await supabase.from("requests").insert({
+      type: "edit",
+      contact_id: contact.id,
+      rank: contact.rank,
+      first_name: contact.first_name,
+      last_name: contact.last_name,
+      unit: contact.unit,
+      company: contact.company,
+      workplace: contact.workplace,
+      phone: contact.phone,
+      line_id: contact.line_id,
+      notes: contact.notes,
+      requester_name: requesterName.trim(),
+      requester_phone: requesterPhone.trim(),
+      status: "pending",
+      edit_data: editData,
+    });
+
+    if (err) setError("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    else onSent();
+    setSaving(false);
+  }
+
+  const input = "px-3 py-2 border border-[#cbd5e1] rounded-xl text-sm focus:ring-2 focus:ring-[#1e3a5f]/20 outline-none";
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-[#1e3a5f] text-lg">ขอแก้ไขรายชื่อ</h3>
+          <button onClick={onClose} className="text-[#94a3b8] hover:text-[#1e293b]"><X size={20} /></button>
+        </div>
+        <p className="text-xs text-[#64748b] mb-4 bg-[#f8fafc] p-3 rounded-xl border border-[#e2e8f0]">
+          แก้ไขข้อมูลที่ต้องการ → แล้วกดส่งคำขอ admin จะเป็นผู้อนุมัติก่อนข้อมูลจะถูกอัพเดท
+        </p>
+
+        {error && <p className="text-sm text-red-600 bg-red-50 p-3 rounded-xl mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select name="rank" value={form.rank} onChange={handleChange} required className={input}>
+              <option value="">ยศ</option>{RANKS.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+            <input name="first_name" value={form.first_name} onChange={handleChange} required placeholder="ชื่อ" className={input} />
+            <input name="last_name" value={form.last_name} onChange={handleChange} required placeholder="สกุล" className={input} />
+            <select name="unit" value={form.unit} onChange={handleChange} required className={input}>
+              <option value="">เหล่า</option>{UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+            </select>
+            <select name="company" value={form.company} onChange={handleChange} required className={input}>
+              <option value="">กองร้อย</option>{COMPANIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <input name="workplace" value={form.workplace} onChange={handleChange} placeholder="ที่ทำงาน" className={input} />
+            <input name="phone" value={form.phone} onChange={handleChange} placeholder="เบอร์โทร" className={input} />
+            <input name="line_id" value={form.line_id} onChange={handleChange} placeholder="LINE ID" className={input} />
+            <input name="notes" value={form.notes} onChange={handleChange} placeholder="หมายเหตุ" className={input} />
+          </div>
+
+          <div className="border-t border-[#e2e8f0] pt-4 space-y-3">
+            <p className="text-xs font-semibold text-[#1e3a5f]">ข้อมูลผู้ขอแก้ไข *</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input value={requesterName} onChange={(e) => setRequesterName(e.target.value)} required placeholder="ชื่อ-สกุล ผู้ขอ" className={input} />
+              <input value={requesterPhone} onChange={(e) => setRequesterPhone(e.target.value)} placeholder="เบอร์โทร ผู้ขอ" className={input} />
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button type="submit" disabled={saving}
+              className="px-6 py-2 bg-[#c9a227] text-[#1e3a5f] font-bold rounded-xl text-sm hover:bg-[#d4b44a] transition-colors disabled:opacity-50 flex items-center gap-2">
+              {saving && <Loader2 className="animate-spin" size={14} />} <Send size={14} /> ส่งคำขอ
+            </button>
+            <button type="button" onClick={onClose}
+              className="px-6 py-2 border border-[#cbd5e1] rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
+              ยกเลิก
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function CheckCircle2(props: { size: number; className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={props.className}>
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
   );
 }

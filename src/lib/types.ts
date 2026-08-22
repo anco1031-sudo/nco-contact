@@ -15,6 +15,7 @@ export interface Contact {
 
 export interface ContactRequest {
   id: string;
+  type: string;
   rank: string;
   first_name: string;
   last_name: string;
@@ -27,6 +28,8 @@ export interface ContactRequest {
   requester_name: string;
   requester_phone: string;
   status: "pending" | "approved" | "rejected";
+  contact_id: string | null;
+  edit_data: Record<string, string> | null;
   reviewed_by: string | null;
   reviewed_at: string | null;
   created_at: string;

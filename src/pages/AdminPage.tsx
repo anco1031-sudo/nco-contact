@@ -122,11 +122,18 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
     const req = requests.find((r) => r.id === id);
     if (!req) return;
     if (status === "approved") {
-      await supabase.from("contacts").insert({
-        rank: req.rank, first_name: req.first_name, last_name: req.last_name,
-        unit: req.unit, company: req.company, workplace: req.workplace,
-        phone: req.phone, line_id: req.line_id, notes: req.notes,
-      });
+      const reqType = (req as Record<string, unknown>).type || "add";
+      if (reqType === "edit" && (req as Record<string, unknown>).contact_id && (req as Record<string, unknown>).edit_data) {
+        // อนุมัติแก้ไข → อัพเดท contact
+        await supabase.from("contacts").update((req as Record<string, unknown>).edit_data as Record<string, string>).eq("id", (req as Record<string, unknown>).contact_id as string);
+      } else {
+        // อนุมัติเพิ่มใหม่ → insert contact
+        await supabase.from("contacts").insert({
+          rank: req.rank, first_name: req.first_name, last_name: req.last_name,
+          unit: req.unit, company: req.company, workplace: req.workplace,
+          phone: req.phone, line_id: req.line_id, notes: req.notes,
+        });
+      }
     }
     await supabase.from("requests").update({ status, reviewed_by: user.email, reviewed_at: new Date().toISOString() }).eq("id", id);
     await fetchRequests();
@@ -195,46 +202,81 @@ function RequestsTab({ requests, loading, onReview, onDelete }: {
   onReview: (id: string, s: "approved" | "rejected") => void;
   onDelete: (id: string) => void;
 }) {
+  const editLabel: Record<string, string> = {
+    rank: "ยศ", first_name: "ชื่อ", last_name: "สกุล", unit: "เหล่า",
+    company: "กองร้อย", workplace: "ที่ทำงาน", phone: "เบอร์โทร", line_id: "LINE", notes: "หมายเหตุ",
+  };
+
   if (loading) return <div className="text-center py-12"><Loader2 className="animate-spin text-[#1e3a5f] mx-auto" size={32} /></div>;
   if (requests.length === 0) return <EmptyState icon={<Clock size={48} />} text="ยังไม่มีคำขอ" />;
   return (
     <div className="space-y-4">
-      {requests.map((req) => (
-        <div key={req.id} className={`bg-white rounded-2xl border p-5 shadow-sm ${req.status === "pending" ? "border-[#c9a227]/30" : "border-[#e2e8f0]"}`}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-            <div>
-              <span className="font-bold text-[#c9a227]">{req.rank}</span>{" "}
-              <span className="font-medium">{req.first_name} {req.last_name}</span>
-              <span className={`ml-3 px-2 py-0.5 rounded-full text-xs font-medium ${req.status === "pending" ? "badge-pending" : req.status === "approved" ? "badge-approved" : "badge-rejected"}`}>
-                {req.status === "pending" ? "รออนุมัติ" : req.status === "approved" ? "อนุมัติแล้ว" : "ไม่อนุมัติ"}
-              </span>
+      {requests.map((req) => {
+        const reqType = (req as Record<string, unknown>).type || "add";
+        const editData = (req as Record<string, unknown>).edit_data as Record<string, string> | null;
+        const isEdit = reqType === "edit";
+        return (
+          <div key={req.id} className={`bg-white rounded-2xl border p-5 shadow-sm ${req.status === "pending" ? "border-[#c9a227]/30" : "border-[#e2e8f0]"}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <span className="font-bold text-[#c9a227]">{req.rank}</span>{" "}
+                <span className="font-medium">{req.first_name} {req.last_name}</span>
+                <span className={`ml-3 px-2 py-0.5 rounded-full text-xs font-medium ${isEdit ? "bg-blue-100 text-blue-700" : req.status === "pending" ? "badge-pending" : req.status === "approved" ? "badge-approved" : "badge-rejected"}`}>
+                  {isEdit ? "ขอแก้ไข" : req.status === "pending" ? "รออนุมัติ" : req.status === "approved" ? "อนุมัติแล้ว" : "ไม่อนุมัติ"}
+                </span>
+                {!isEdit && (
+                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${req.status === "pending" ? "badge-pending" : req.status === "approved" ? "badge-approved" : "badge-rejected"}`}>
+                    {req.status === "pending" ? "รออนุมัติ" : req.status === "approved" ? "อนุมัติแล้ว" : "ไม่อนุมัติ"}
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-[#94a3b8]">ส่งเมื่อ: {new Date(req.created_at).toLocaleDateString("th-TH")}</div>
             </div>
-            <div className="text-xs text-[#94a3b8]">ส่งเมื่อ: {new Date(req.created_at).toLocaleDateString("th-TH")}</div>
+
+            {/* แสดงข้อมูลที่ขอแก้ไข */}
+            {isEdit && editData && Object.keys(editData).length > 0 && (
+              <div className="mb-3 p-3 bg-blue-50 rounded-xl border border-blue-200">
+                <p className="text-xs font-semibold text-blue-700 mb-2">📝 ข้อมูลที่ต้องการแก้ไข:</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {Object.entries(editData).map(([key, val]) => (
+                    <div key={key} className="text-xs">
+                      <span className="text-blue-600 font-medium">{editLabel[key] || key}: </span>
+                      <span className="text-[#1e3a5f]">{val || "(ว่าง)"}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* แสดงข้อมูลเดิม (เฉพาะ add) */}
+            {!isEdit && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm mb-3">
+                <div><span className="text-[#64748b]">เหล่า: </span>{req.unit}</div>
+                <div><span className="text-[#64748b]">กองร้อย: </span>{req.company}</div>
+                {req.workplace && <div><span className="text-[#64748b]">ที่ทำงาน: </span>{req.workplace}</div>}
+                {req.phone && <div><span className="text-[#64748b]">เบอร์: </span>{req.phone}</div>}
+                {req.line_id && <div><span className="text-[#64748b]">LINE: </span>{req.line_id}</div>}
+                {req.notes && <div className="col-span-2"><span className="text-[#64748b]">หมายเหตุ: </span>{req.notes}</div>}
+              </div>
+            )}
+
+            <div className="text-xs text-[#94a3b8] border-t border-[#e2e8f0] pt-3">ผู้ขอ: {req.requester_name} | เบอร์ผู้ขอ: {req.requester_phone}</div>
+            {req.status === "pending" && (
+              <div className="flex gap-2 mt-4">
+                <button onClick={() => onReview(req.id, "approved")} className="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5">
+                  <CheckCircle2 size={16} /> อนุมัติ
+                </button>
+                <button onClick={() => onReview(req.id, "rejected")} className="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors flex items-center gap-1.5">
+                  <XCircle size={16} /> ไม่อนุมัติ
+                </button>
+                <button onClick={() => onDelete(req.id)} className="px-3 py-2 border border-[#cbd5e1] rounded-xl text-sm text-[#64748b] hover:bg-gray-50 transition-colors">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm mb-3">
-            <div><span className="text-[#64748b]">เหล่า: </span>{req.unit}</div>
-            <div><span className="text-[#64748b]">กองร้อย: </span>{req.company}</div>
-            {req.workplace && <div><span className="text-[#64748b]">ที่ทำงาน: </span>{req.workplace}</div>}
-            {req.phone && <div><span className="text-[#64748b]">เบอร์: </span>{req.phone}</div>}
-            {req.line_id && <div><span className="text-[#64748b]">LINE: </span>{req.line_id}</div>}
-            {req.notes && <div className="col-span-2"><span className="text-[#64748b]">หมายเหตุ: </span>{req.notes}</div>}
-          </div>
-          <div className="text-xs text-[#94a3b8] border-t border-[#e2e8f0] pt-3">ผู้ขอ: {req.requester_name} | เบอร์ผู้ขอ: {req.requester_phone}</div>
-          {req.status === "pending" && (
-            <div className="flex gap-2 mt-4">
-              <button onClick={() => onReview(req.id, "approved")} className="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5">
-                <CheckCircle2 size={16} /> อนุมัติ
-              </button>
-              <button onClick={() => onReview(req.id, "rejected")} className="px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors flex items-center gap-1.5">
-                <XCircle size={16} /> ไม่อนุมัติ
-              </button>
-              <button onClick={() => onDelete(req.id)} className="px-3 py-2 border border-[#cbd5e1] rounded-xl text-sm text-[#64748b] hover:bg-gray-50 transition-colors">
-                <Trash2 size={16} />
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
