@@ -1,7 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
-import RequestPage from "./pages/RequestPage";
+import ContactsPage from "./pages/ContactsPage";
+import EventsPage from "./pages/EventsPage";
+import NewsPage from "./pages/NewsPage";
+import BoardPage from "./pages/BoardPage";
+import SurveysPage from "./pages/SurveysPage";
 import AdminPage from "./pages/AdminPage";
 
 export default function App() {
@@ -11,12 +15,17 @@ export default function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/request" element={<RequestPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/surveys" element={<SurveysPage />} />
+          <Route path="/board" element={<BoardPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>
-      <footer className="border-t border-[#cbd5e1] bg-primary text-white py-4 text-center text-sm">
-        <p>NCO 1333 Contact &copy; {new Date().getFullYear()}</p>
+      <footer className="border-t border-[#e2e8f0] bg-[#1e3a5f] text-white py-6 text-center text-sm">
+        <p className="font-medium">NCO 1333 เพื่อนกันจนวันตาย &copy; {new Date().getFullYear()}</p>
+        <p className="text-white/50 text-xs mt-1">นักเรียนนายสิบรุ่นที่ 1333</p>
       </footer>
     </div>
   );
