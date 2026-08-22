@@ -60,7 +60,6 @@ interface Props {
 export default function EventCard({ event, onEdit }: Props) {
   const [expanded, setExpanded] = useState(false);
   const cfg = statusConfig[event.status] || statusConfig.survey;
-  const StatusIcon = cfg.icon;
 
   const countdown = useEventTimer(event.event_date, event.event_time, event.status);
 

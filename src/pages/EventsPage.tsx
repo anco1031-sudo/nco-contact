@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import type { Event as EventType, EventStatus } from "../lib/types";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
-import { CalendarDays, Plus, Minus, Loader2, X } from "lucide-react";
+import { CalendarDays, Plus, Minus, Loader2 } from "lucide-react";
 
 export default function EventsPage() {
   const [events, setEvents] = useState<EventType[]>([]);

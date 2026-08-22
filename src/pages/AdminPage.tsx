@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
-import type { ContactRequest, Event as EventType, News, Post, Survey, SurveyOption } from "../lib/types";
+import type { ContactRequest, Event as EventType, News, Post, Survey } from "../lib/types";
 import { RANKS, UNITS, COMPANIES } from "../lib/constants";
 import {
   Shield, LogIn, LogOut, CheckCircle2, XCircle,
@@ -705,11 +705,10 @@ function SurveysTab() {
 
 function SurveyFormInline({ onAdded, onCancel }: { onAdded: () => void; onCancel: () => void }) {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [closeDate, setCloseDate] = useState("");
   const [createdBy, setCreatedBy] = useState("");
-  const [options, setOptions] = useState<[string, string]>(["", ""]);
+  const [options, setOptions] = useState<string[]>(["", ""]);
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -717,7 +716,7 @@ function SurveyFormInline({ onAdded, onCancel }: { onAdded: () => void; onCancel
     const validOptions = options.filter((o) => o.trim());
     if (!title || !closeDate || !createdBy || validOptions.length < 2) return;
     setSaving(true);
-    const { data: survey } = await supabase.from("surveys").insert({ title, description, image_url: imageUrl, close_date: closeDate, created_by: createdBy }).select().single();
+    const { data: survey } = await supabase.from("surveys").insert({ title, description: "", image_url: imageUrl, close_date: closeDate, created_by: createdBy }).select().single();
     if (survey) {
       await supabase.from("survey_options").insert(validOptions.map((label, i) => ({ survey_id: survey.id, label, sort_order: i })));
       onAdded();
@@ -739,14 +738,14 @@ function SurveyFormInline({ onAdded, onCancel }: { onAdded: () => void; onCancel
       <div className="space-y-2">
         {options.map((opt, i) => (
           <div key={i} className="flex gap-2">
-            <input value={opt} onChange={(e) => { const n = [...options] as [string, string]; n[i] = e.target.value; setOptions(n); }} placeholder={`ตัวเลือก ${i + 1}`} className={input + " flex-1"} />
+            <input value={opt} onChange={(e) => { const n = [...options]; n[i] = e.target.value; setOptions(n); }} placeholder={`ตัวเลือก ${i + 1}`} className={input + " flex-1"} />
             {i > 1 && (
-              <button type="button" onClick={() => setOptions([options[0], options[1]])} className="text-[#94a3b8] hover:text-red-500"><X size={16} /></button>
+              <button type="button" onClick={() => setOptions(options.filter((_, idx) => idx !== i))} className="text-[#94a3b8] hover:text-red-500"><X size={16} /></button>
             )}
           </div>
         ))}
         {options.length < 6 && (
-          <button type="button" onClick={() => setOptions([...options, ""] as [string, ...string[]])} className="text-xs text-[#1e3a5f] flex items-center gap-1 hover:underline"><Plus size={12} /> เพิ่มตัวเลือก</button>
+          <button type="button" onClick={() => setOptions([...options, ""])} className="text-xs text-[#1e3a5f] flex items-center gap-1 hover:underline"><Plus size={12} /> เพิ่มตัวเลือก</button>
         )}
       </div>
       <div className="flex gap-2">

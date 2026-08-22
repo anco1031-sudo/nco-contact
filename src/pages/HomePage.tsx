@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import type { Contact, Event as EventType, News, Survey } from "../lib/types";
+import type { Event as EventType, News, Survey } from "../lib/types";
 import EventCard from "../components/EventCard";
 import NewsCard from "../components/NewsCard";
 import SurveyCard from "../components/SurveyCard";
