@@ -77,7 +77,7 @@ export default function RequestPage() {
           <ClipboardPlus className="text-accent" size={32} />
           ขอเพิ่มชื่อ
         </h1>
-        <p className="mt-2 text-muted">กรอกแบบฟอร์มด้านล่างเพื่อขอเพิ่มรายชื่อบุคลากร</p>
+        <p className="mt-2 text-muted">กรอกแบบฟอร์มด้านล่างเพื่อขอเพิ่มรายชื่อ</p>
       </div>
 
       {error && (

@@ -16,7 +16,7 @@ export default function App() {
         </Routes>
       </main>
       <footer className="border-t border-[#cbd5e1] bg-primary text-white py-4 text-center text-sm">
-        <p>NCO Contact Directory &copy; {new Date().getFullYear()}</p>
+        <p>NCO 1333 Contact &copy; {new Date().getFullYear()}</p>
       </footer>
     </div>
   );

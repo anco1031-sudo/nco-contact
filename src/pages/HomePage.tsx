@@ -64,7 +64,7 @@ export default function HomePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
           <Users className="text-accent" size={32} />
-          รายชื่อบุคลากร
+          รายชื่อเพื่อน ๆ
         </h1>
         <p className="mt-2 text-muted">
           ข้อมูลติดต่อบุคลากรทางทหาร — ค้นหาและกรองข้อมูลได้ตามต้องการ

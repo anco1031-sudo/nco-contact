@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X, Users, ClipboardPlus, Shield } from "lucide-react";
 
 const navLinks = [
-  { href: "/", label: "รายชื่อบุคลากร", icon: Users },
+  { href: "/", label: "รายชื่อเพื่อน ๆ", icon: Users },
   { href: "/request", label: "ขอเพิ่มชื่อ", icon: ClipboardPlus },
   { href: "/admin", label: "Admin", icon: Shield },
 ];
@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center text-primary text-sm font-black">
               NCO
             </div>
-            <span className="hidden sm:inline">NCO Contact Directory</span>
+            <span className="hidden sm:inline">NCO 1333 Contact</span>
             <span className="sm:hidden">NCO</span>
           </Link>
 
