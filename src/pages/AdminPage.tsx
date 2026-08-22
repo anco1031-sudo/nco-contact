@@ -122,10 +122,9 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
     const req = requests.find((r) => r.id === id);
     if (!req) return;
     if (status === "approved") {
-      const reqType = (req as Record<string, unknown>).type || "add";
-      if (reqType === "edit" && (req as Record<string, unknown>).contact_id && (req as Record<string, unknown>).edit_data) {
+      if (req.type === "edit" && req.contact_id && req.edit_data) {
         // อนุมัติแก้ไข → อัพเดท contact
-        await supabase.from("contacts").update((req as Record<string, unknown>).edit_data as Record<string, string>).eq("id", (req as Record<string, unknown>).contact_id as string);
+        await supabase.from("contacts").update(req.edit_data).eq("id", req.contact_id);
       } else {
         // อนุมัติเพิ่มใหม่ → insert contact
         await supabase.from("contacts").insert({
@@ -212,8 +211,8 @@ function RequestsTab({ requests, loading, onReview, onDelete }: {
   return (
     <div className="space-y-4">
       {requests.map((req) => {
-        const reqType = (req as Record<string, unknown>).type || "add";
-        const editData = (req as Record<string, unknown>).edit_data as Record<string, string> | null;
+        const reqType = req.type || "add";
+        const editData = req.edit_data;
         const isEdit = reqType === "edit";
         return (
           <div key={req.id} className={`bg-white rounded-2xl border p-5 shadow-sm ${req.status === "pending" ? "border-[#c9a227]/30" : "border-[#e2e8f0]"}`}>
