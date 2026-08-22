@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { Contact } from "../lib/types";
+import type { Contact } from "../lib/types";
 import { RANKS, UNITS, COMPANIES } from "../lib/constants";
 import {
   Search, Filter, Phone, MessageCircle,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { User } from "@supabase/supabase-js";
-import { Request as ContactRequest } from "../lib/types";
+import type { User } from "@supabase/supabase-js";
+import type { Request as ContactRequest } from "../lib/types";
 import { RANKS, UNITS, COMPANIES } from "../lib/constants";
 import {
   Shield, LogIn, LogOut, CheckCircle2, XCircle,
