@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Post } from "../lib/types";
+import type { User } from "@supabase/supabase-js";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { MessageCircle, Loader2 } from "lucide-react";
@@ -8,8 +9,12 @@ import { MessageCircle, Loader2 } from "lucide-react";
 export default function BoardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => { fetchPosts(); }, []);
+  useEffect(() => {
+    fetchPosts();
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+  }, []);
 
   async function fetchPosts() {
     setLoading(true);
@@ -49,7 +54,7 @@ export default function BoardPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {posts.map((p) => <PostCard key={p.id} post={p} onDelete={handleDelete} />)}
+          {posts.map((p) => <PostCard key={p.id} post={p} onDelete={user ? handleDelete : undefined} />)}
         </div>
       )}
     </div>
