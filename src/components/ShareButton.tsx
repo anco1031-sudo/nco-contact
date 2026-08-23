@@ -7,8 +7,6 @@ interface Props {
   url?: string;
 }
 
-const SITE_URL = window.location.origin;
-
 export default function ShareButton({ title, description, url }: Props) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
