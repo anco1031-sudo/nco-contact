@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Share2, Link2, X, Check, MessageCircle, Copy } from "lucide-react";
+import { Share2, Link2, X, Check, Copy } from "lucide-react";
 
 interface Props {
   title: string;
@@ -15,7 +15,6 @@ export default function ShareButton({ title, description, url }: Props) {
   const shareUrl = url || window.location.href;
   const shareText = `📢 ${title}\n${description ? description + "\n" : ""}\n🔗 ${shareUrl}`;
 
-  // ปิด dropdown เมื่อกดข้างนอก
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
@@ -27,14 +26,12 @@ export default function ShareButton({ title, description, url }: Props) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  // คัดลอกเฉพาะลิงก์
   async function copyLink() {
     await navigator.clipboard.writeText(shareUrl);
     setCopied("link");
     setTimeout(() => setCopied(null), 2000);
   }
 
-  // คัดลอกข้อความพร้อมลิงก์ (เอาไปวางใน LINE/Facebook ได้เลย)
   async function copyText() {
     await navigator.clipboard.writeText(shareText);
     setCopied("text");
@@ -51,7 +48,7 @@ export default function ShareButton({ title, description, url }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-[#e2e8f0] shadow-2xl p-3 w-64">
+        <div className="absolute right-0 top-full mt-2 z-50 bg-white rounded-2xl border border-[#e2e8f0] shadow-2xl p-3 w-72">
           {/* Header */}
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-sm font-bold text-[#1e3a5f]">แชร์</span>
@@ -71,7 +68,7 @@ export default function ShareButton({ title, description, url }: Props) {
 
           {/* Actions */}
           <div className="space-y-1.5">
-            {/* คัดลอกข้อความพร้อมลิงก์ — ใช้กับ LINE/Facebook ได้เลย */}
+            {/* คัดลอกข้อความพร้อมลิงก์ */}
             <button
               onClick={copyText}
               className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium bg-[#c9a227] text-[#1e3a5f] hover:bg-[#d4b44a] transition-colors"
@@ -80,7 +77,7 @@ export default function ShareButton({ title, description, url }: Props) {
               {copied === "text" ? "คัดลอกข้อความแล้ว! ✓" : "คัดลอกข้อความ + ลิงก์"}
             </button>
 
-            {/* คัดลอกลิงก์อย่างเดียว */}
+            {/* คัดลอกลิงก์ */}
             <button
               onClick={copyLink}
               className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium border border-[#e2e8f0] text-[#64748b] hover:bg-[#f1f5f9] transition-colors"
@@ -88,17 +85,6 @@ export default function ShareButton({ title, description, url }: Props) {
               {copied === "link" ? <Check size={15} className="text-green-600" /> : <Link2 size={15} />}
               {copied === "link" ? "คัดลอกแล้ว! ✓" : "คัดลอกลิงก์"}
             </button>
-
-            {/* LINE */}
-            <a
-              href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium bg-[#06C755] text-white hover:bg-[#05a847] transition-colors"
-            >
-              <MessageCircle size={15} />
-              ส่งทาง LINE
-            </a>
           </div>
 
           {/* Hint */}

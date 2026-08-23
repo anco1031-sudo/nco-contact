@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import type { Contact } from "../lib/types";
 import type { User } from "@supabase/supabase-js";
 import { RANKS, UNITS, COMPANIES } from "../lib/constants";import { Search, Filter, Phone, MessageCircle,
-  ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send, UserPlus,
+  ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send, UserPlus, Check, Clipboard
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -52,6 +52,14 @@ export default function ContactsPage() {
 
   const hasActiveFilters = filters.rank || filters.unit || filters.company || filters.workplace;
   function clearFilters() { setFilters({ rank: "", unit: "", company: "", workplace: "" }); setSearchTerm(""); }
+
+  const [copiedLineId, setCopiedLineId] = useState<string | null>(null);
+
+  async function copyLineId(lineId: string, contactId: string) {
+    await navigator.clipboard.writeText(lineId);
+    setCopiedLineId(contactId);
+    setTimeout(() => setCopiedLineId(null), 2000);
+  }
 
   const uniqueWorkplaces = [...new Set(contacts.map((c) => c.workplace).filter(Boolean))].sort();
   const input = "w-full px-3 py-2 border border-[#cbd5e1] rounded-xl text-sm focus:ring-2 focus:ring-[#1e3a5f]/20 focus:border-[#1e3a5f] outline-none";
@@ -210,9 +218,14 @@ export default function ContactsPage() {
                           </a>
                         )}
                         {c.line_id && (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium">
-                            <MessageCircle size={12} /> {c.line_id}
-                          </span>
+                          <button
+                            onClick={() => copyLineId(c.line_id, c.id)}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-xs font-medium cursor-pointer"
+                            title="คัดลอก LINE ID"
+                          >
+                            {copiedLineId === c.id ? <Check size={12} /> : <Clipboard size={12} />}
+                            {copiedLineId === c.id ? "คัดลอกแล้ว!" : c.line_id}
+                          </button>
                         )}
                       </div>
                     </td>
@@ -278,9 +291,14 @@ export default function ContactsPage() {
                         </a>
                       )}
                       {c.line_id && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg font-medium">
-                          <MessageCircle size={14} /> LINE: {c.line_id}
-                        </span>
+                        <button
+                          onClick={() => copyLineId(c.line_id, c.id)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors font-medium cursor-pointer"
+                          title="คัดลอก LINE ID"
+                        >
+                          {copiedLineId === c.id ? <Check size={14} /> : <Clipboard size={14} />}
+                          {copiedLineId === c.id ? "คัดลอกแล้ว!" : `LINE: ${c.line_id}`}
+                        </button>
                       )}
                     </div>
                   </div>
