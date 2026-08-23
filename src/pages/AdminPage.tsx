@@ -223,11 +223,6 @@ function RequestsTab({ requests, loading, onReview, onDelete }: {
                 <span className={`ml-3 px-2 py-0.5 rounded-full text-xs font-medium ${isEdit ? "bg-blue-100 text-blue-700" : req.status === "pending" ? "badge-pending" : req.status === "approved" ? "badge-approved" : "badge-rejected"}`}>
                   {isEdit ? "ขอแก้ไข" : req.status === "pending" ? "รออนุมัติ" : req.status === "approved" ? "อนุมัติแล้ว" : "ไม่อนุมัติ"}
                 </span>
-                {!isEdit && (
-                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${req.status === "pending" ? "badge-pending" : req.status === "approved" ? "badge-approved" : "badge-rejected"}`}>
-                    {req.status === "pending" ? "รออนุมัติ" : req.status === "approved" ? "อนุมัติแล้ว" : "ไม่อนุมัติ"}
-                  </span>
-                )}
               </div>
               <div className="text-xs text-[#94a3b8]">ส่งเมื่อ: {new Date(req.created_at).toLocaleDateString("th-TH")}</div>
             </div>
