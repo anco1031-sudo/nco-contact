@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 import type { Event as EventType, EventStatus } from "../lib/types";
 import {
   Calendar, MapPin, Clock, ArrowLeft, Timer,
-  ClipboardList, CheckCircle2, Hourglass, CircleCheckBig, Share2,
+  ClipboardList, CheckCircle2, Hourglass, CircleCheckBig,
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
 

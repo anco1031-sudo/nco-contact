@@ -58,12 +58,12 @@ export default function SurveyDetailPage() {
   }
 
   const allImages: string[] = [
-    ...(survey.image_url ? [survey.image_url] : []),
+    ...(survey!.image_url ? [survey!.image_url] : []),
     ...extraImages.sort((a, b) => a.sort_order - b.sort_order).map((i) => i.image_url),
   ];
 
-  const isClosed = new Date(survey.close_date) < new Date();
-  const daysLeft = Math.ceil((new Date(survey.close_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  const isClosed = new Date(survey!.close_date) < new Date();
+  const daysLeft = Math.ceil((new Date(survey!.close_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   const totalVotes = votes.length;
 
   function getVoteCount(optionId: string) {

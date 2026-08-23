@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import type { Event as EventType, EventStatus } from "../lib/types";
 import { Link } from "react-router-dom";
 import {
-  Calendar, MapPin, Clock, ChevronDown, ChevronUp,
+  Calendar, MapPin, Clock,
   ClipboardList, CheckCircle2, Hourglass, CircleCheckBig, Pencil, Timer, ExternalLink,
 } from "lucide-react";
 import ShareButton from "./ShareButton";
@@ -60,7 +60,6 @@ interface Props {
 }
 
 export default function EventCard({ event, onEdit }: Props) {
-  const [expanded, setExpanded] = useState(false);
   const cfg = statusConfig[event.status] || statusConfig.survey;
 
   const countdown = useEventTimer(event.event_date, event.event_time, event.status);
