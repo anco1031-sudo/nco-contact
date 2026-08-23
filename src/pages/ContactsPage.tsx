@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { Contact } from "../lib/types";
 import type { User } from "@supabase/supabase-js";
-import { RANKS, UNITS, COMPANIES } from "../lib/constants";import { Search, Filter, Phone, MessageCircle,
+import { RANKS, UNITS, COMPANIES } from "../lib/constants";import { Search, Filter, Phone,
   ChevronDown, ChevronUp, X, Users, Pencil, Loader2, Send, UserPlus, Check, Clipboard
 } from "lucide-react";
 import { Link } from "react-router-dom";
