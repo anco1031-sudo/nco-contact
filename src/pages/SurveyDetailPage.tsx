@@ -96,13 +96,11 @@ export default function SurveyDetailPage() {
         {/* Image Gallery */}
         {allImages.length > 0 && (
           <div className="relative bg-gray-100">
-            <div className="aspect-video overflow-hidden">
-              <img
-                src={allImages[currentImage]}
-                alt={`${survey.title} รูป ${currentImage + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <img
+              src={allImages[currentImage]}
+              alt={`${survey.title} รูป ${currentImage + 1}`}
+              className="w-full max-h-[500px] object-contain"
+            />
             {allImages.length > 1 && (
               <>
                 <button

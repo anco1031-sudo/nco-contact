@@ -66,13 +66,11 @@ export default function NewsDetailPage() {
         {/* Image Gallery */}
         {images.length > 0 && (
           <div className="relative bg-gray-100">
-            <div className="aspect-video overflow-hidden">
-              <img
-                src={images[currentImage].image_url}
-                alt={`${item.title} รูป ${currentImage + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <img
+              src={images[currentImage].image_url}
+              alt={`${item.title} รูป ${currentImage + 1}`}
+              className="w-full max-h-[500px] object-contain"
+            />
             {images.length > 1 && (
               <>
                 <button
