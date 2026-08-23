@@ -8,6 +8,9 @@ import BoardPage from "./pages/BoardPage";
 import SurveysPage from "./pages/SurveysPage";
 import AdminPage from "./pages/AdminPage";
 import RequestPage from "./pages/RequestPage";
+import EventDetailPage from "./pages/EventDetailPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
+import SurveyDetailPage from "./pages/SurveyDetailPage";
 
 export default function App() {
   return (
@@ -18,8 +21,11 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetailPage />} />
           <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/:id" element={<NewsDetailPage />} />
           <Route path="/surveys" element={<SurveysPage />} />
+          <Route path="/surveys/:id" element={<SurveyDetailPage />} />
           <Route path="/board" element={<BoardPage />} />
           <Route path="/request" element={<RequestPage />} />
           <Route path="/admin" element={<AdminPage />} />

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import type { Survey, SurveyOption, SurveyVote, SurveyImage } from "../lib/types";
-import { BarChart3, Clock, CheckCircle2, Send, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { BarChart3, Clock, CheckCircle2, Send, Loader2, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import ShareButton from "./ShareButton";
 
 interface Props {
@@ -230,7 +231,15 @@ export default function SurveyCard({ survey, onVoted }: Props) {
           </div>
         )}
 
-        <div className="text-xs text-[#94a3b8] mt-3">แจ้งโดย: {survey.created_by}</div>
+        <div className="mt-3 flex items-center justify-between">
+          <span className="text-xs text-[#94a3b8]">แจ้งโดย: {survey.created_by}</span>
+          <Link
+            to={`/surveys/${survey.id}`}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1e3a5f] hover:text-[#c9a227] transition-colors"
+          >
+            ดูรายละเอียด <ExternalLink size={12} />
+          </Link>
+        </div>
       </div>
     </div>
   );

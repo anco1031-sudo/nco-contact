@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import type { Event as EventType, EventStatus } from "../lib/types";
+import { Link } from "react-router-dom";
 import {
   Calendar, MapPin, Clock, ChevronDown, ChevronUp,
-  ClipboardList, CheckCircle2, Hourglass, CircleCheckBig, Pencil, Timer,
+  ClipboardList, CheckCircle2, Hourglass, CircleCheckBig, Pencil, Timer, ExternalLink,
 } from "lucide-react";
 import ShareButton from "./ShareButton";
 
@@ -149,23 +150,13 @@ export default function EventCard({ event, onEdit }: Props) {
           <div className="text-xs text-[#94a3b8]">แจ้งโดย: {event.created_by}</div>
         </div>
 
-        {/* Description expand */}
-        {event.description && (
-          <>
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="mt-3 text-xs text-[#1e3a5f] font-medium flex items-center gap-1 hover:underline"
-            >
-              {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-              {expanded ? "ซ่อนรายละเอียด" : "ดูรายละเอียด"}
-            </button>
-            {expanded && (
-              <p className="mt-2 text-sm text-[#475569] whitespace-pre-wrap border-t border-[#e2e8f0] pt-3">
-                {event.description}
-              </p>
-            )}
-          </>
-        )}
+        {/* View detail link */}
+        <Link
+          to={`/events/${event.id}`}
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1e3a5f] hover:text-[#c9a227] transition-colors"
+        >
+          ดูรายละเอียด <ExternalLink size={12} />
+        </Link>
       </div>
     </div>
   );

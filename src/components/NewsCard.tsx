@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import type { News, NewsCategory, NewsImage } from "../lib/types";
-import { Megaphone, Heart, Flower2, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Megaphone, Heart, Flower2, Newspaper, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import ShareButton from "./ShareButton";
 
 const categoryConfig: Record<NewsCategory, { label: string; color: string; icon: typeof Newspaper }> = {
@@ -91,12 +92,18 @@ export default function NewsCard({ item }: { item: News }) {
           </div>
         </div>
         {item.content && (
-          <p className="text-sm text-[#475569] whitespace-pre-wrap leading-relaxed">{item.content}</p>
+          <p className="text-sm text-[#475569] whitespace-pre-wrap leading-relaxed line-clamp-3">{item.content}</p>
         )}
         <div className="mt-3 flex items-center justify-between text-xs text-[#94a3b8]">
           <span>โดย {item.created_by}</span>
           <span>{new Date(item.created_at).toLocaleDateString("th-TH")}</span>
         </div>
+        <Link
+          to={`/news/${item.id}`}
+          className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#1e3a5f] hover:text-[#c9a227] transition-colors"
+        >
+          ดูรายละเอียด <ExternalLink size={12} />
+        </Link>
       </div>
     </div>
   );
