@@ -57,8 +57,8 @@ export default function SurveyDetailPage() {
     );
   }
 
-  // survey ไม่ possibly null แล้ว (early return ด้านบน)
-  const s = survey as Survey;
+  // eslint-disable-next-line -- survey ไม่ possibly null แล้ว (early return ด้านบน)
+  const s: Survey = survey!;
 
   const allImages: string[] = [
     ...(s.image_url ? [s.image_url] : []),
@@ -78,13 +78,13 @@ export default function SurveyDetailPage() {
     if (!selectedOption || !voterName.trim()) return;
     setVoting(true);
     const { error } = await supabase.from("survey_votes").insert({
-      survey_id: survey.id,
+      survey_id: s.id,
       option_id: selectedOption,
       voter_name: voterName.trim(),
     });
     if (!error) {
       setHasVoted(true);
-      const { data } = await supabase.from("survey_votes").select("*").eq("survey_id", survey.id);
+      const { data } = await supabase.from("survey_votes").select("*").eq("survey_id", s.id);
       if (data) setVotes(data);
     }
     setVoting(false);
@@ -102,7 +102,7 @@ export default function SurveyDetailPage() {
           <div className="bg-gray-100">
             <ClickableImage
               src={allImages[currentImage]}
-              alt={`${survey.title} รูป ${currentImage + 1}`}
+              alt={`${s.title} รูป ${currentImage + 1}`}
               allImages={allImages}
               className="w-full"
             />
@@ -147,9 +147,9 @@ export default function SurveyDetailPage() {
         <div className="p-6 sm:p-8">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 mb-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#1e3a5f] leading-tight">{survey.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1e3a5f] leading-tight">{s.title}</h1>
             <div className="flex items-center gap-2 shrink-0">
-              <ShareButton title={survey.title} description={survey.description || undefined} />
+              <ShareButton title={s.title} description={s.description || undefined} />
               {isClosed ? (
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-200 text-gray-600">
                   <CheckCircle2 size={14} /> ปิดโหวตแล้ว
@@ -162,9 +162,9 @@ export default function SurveyDetailPage() {
             </div>
           </div>
 
-          {survey.description && (
+          {s.description && (
             <p className="text-sm text-[#64748b] whitespace-pre-wrap leading-relaxed mb-6 bg-[#f8fafc] p-4 rounded-xl border border-[#e2e8f0]">
-              {survey.description}
+              {s.description}
             </p>
           )}
 
@@ -214,7 +214,7 @@ export default function SurveyDetailPage() {
                   >
                     <input
                       type="radio"
-                      name={`survey-${survey.id}`}
+                      name={`survey-${s.id}`}
                       value={opt.id}
                       checked={selectedOption === opt.id}
                       onChange={() => setSelectedOption(opt.id)}
@@ -259,8 +259,8 @@ export default function SurveyDetailPage() {
 
           {/* Footer */}
           <div className="mt-6 pt-4 border-t border-[#e2e8f0] flex items-center justify-between text-xs text-[#94a3b8]">
-            <span>สร้างโดย: {survey.created_by}</span>
-            <span>ปิดโหวต: {new Date(survey.close_date).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" })}</span>
+            <span>สร้างโดย: {s.created_by}</span>
+            <span>ปิดโหวต: {new Date(s.close_date).toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" })}</span>
           </div>
         </div>
       </div>
