@@ -7,6 +7,7 @@ import {
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
+import { ClickableImage } from "../components/ImageLightbox";
 
 export default function SurveyDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -96,10 +97,11 @@ export default function SurveyDetailPage() {
         {/* Image Gallery */}
         {allImages.length > 0 && (
           <div className="relative bg-gray-100">
-            <img
+            <ClickableImage
               src={allImages[currentImage]}
               alt={`${survey.title} รูป ${currentImage + 1}`}
-              className="w-full max-h-[500px] object-contain"
+              allImages={allImages}
+              className="w-full max-h-[500px]"
             />
             {allImages.length > 1 && (
               <>

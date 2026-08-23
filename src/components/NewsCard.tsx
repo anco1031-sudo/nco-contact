@@ -4,6 +4,7 @@ import type { News, NewsCategory, NewsImage } from "../lib/types";
 import { Link } from "react-router-dom";
 import { Megaphone, Heart, Flower2, Newspaper, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import ShareButton from "./ShareButton";
+import { ClickableImage } from "./ImageLightbox";
 
 const categoryConfig: Record<NewsCategory, { label: string; color: string; icon: typeof Newspaper }> = {
   pr: { label: "ประชาสัมพันธ์", color: "bg-blue-100 text-blue-700", icon: Megaphone },
@@ -33,10 +34,11 @@ export default function NewsCard({ item }: { item: News }) {
       {/* Image Gallery */}
       {allImages.length > 0 && (
         <div className="relative bg-gray-100">
-          <img
+          <ClickableImage
             src={allImages[currentImage]}
             alt={`${item.title} รูป ${currentImage + 1}`}
-            className="w-full max-h-[300px] object-contain"
+            allImages={allImages}
+            className="w-full max-h-[300px]"
           />
 
           {allImages.length > 1 && (

@@ -7,6 +7,7 @@ import {
   ChevronLeft, ChevronRight, Clock,
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
+import { ClickableImage } from "../components/ImageLightbox";
 
 const categoryConfig: Record<NewsCategory, { label: string; color: string; icon: typeof Newspaper }> = {
   pr: { label: "ประชาสัมพันธ์", color: "bg-blue-100 text-blue-700", icon: Megaphone },
@@ -66,10 +67,11 @@ export default function NewsDetailPage() {
         {/* Image Gallery */}
         {images.length > 0 && (
           <div className="relative bg-gray-100">
-            <img
+            <ClickableImage
               src={images[currentImage].image_url}
               alt={`${item.title} รูป ${currentImage + 1}`}
-              className="w-full max-h-[500px] object-contain"
+              allImages={images.map((i) => i.image_url)}
+              className="w-full max-h-[500px]"
             />
             {images.length > 1 && (
               <>
