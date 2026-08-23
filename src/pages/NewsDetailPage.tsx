@@ -66,12 +66,12 @@ export default function NewsDetailPage() {
       <div className="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm overflow-hidden">
         {/* Image Gallery */}
         {images.length > 0 && (
-          <div className="relative bg-gray-100" style={{ maxHeight: "500px" }}>
+          <div className="bg-gray-100">
             <ClickableImage
               src={images[currentImage].image_url}
               alt={`${item.title} รูป ${currentImage + 1}`}
               allImages={images.map((i) => i.image_url)}
-              className="w-full h-auto"
+              className="w-full"
             />
             {images.length > 1 && (
               <>
