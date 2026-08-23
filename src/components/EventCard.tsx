@@ -5,6 +5,7 @@ import {
   Calendar, MapPin, Clock, ChevronDown, ChevronUp,
   ClipboardList, CheckCircle2, Hourglass, CircleCheckBig, Pencil, Timer,
 } from "lucide-react";
+import ShareButton from "./ShareButton";
 
 const statusConfig: Record<EventStatus, { label: string; color: string; icon: typeof Calendar }> = {
   survey: { label: "สำรวจ", color: "bg-blue-100 text-blue-700", icon: ClipboardList },
@@ -86,6 +87,7 @@ export default function EventCard({ event, onEdit }: Props) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{event.title}</h3>
           <div className="flex items-center gap-2 shrink-0">
+            <ShareButton title={event.title} description={event.description || undefined} />
             {event.status === "survey" && onEdit && (
               <button
                 onClick={() => onEdit(event)}

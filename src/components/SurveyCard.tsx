@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import type { Survey, SurveyOption, SurveyVote, SurveyImage } from "../lib/types";
 import { BarChart3, Clock, CheckCircle2, Send, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import ShareButton from "./ShareButton";
 
 interface Props {
   survey: Survey;
@@ -129,15 +130,18 @@ export default function SurveyCard({ survey, onVoted }: Props) {
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{survey.title}</h3>
-          {isClosed ? (
-            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-600 shrink-0">
-              <CheckCircle2 size={14} /> ปิดโหวตแล้ว
-            </span>
-          ) : (
-            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 shrink-0">
-              <Clock size={14} /> เหลือ {daysLeft} วัน
-            </span>
-          )}
+          <div className="flex items-center gap-2 shrink-0">
+            <ShareButton title={survey.title} description={survey.description || undefined} />
+            {isClosed ? (
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-600">
+                <CheckCircle2 size={14} /> ปิดโหวตแล้ว
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                <Clock size={14} /> เหลือ {daysLeft} วัน
+              </span>
+            )}
+          </div>
         </div>
 
         {survey.description && (

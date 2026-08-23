@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import type { News, NewsCategory, NewsImage } from "../lib/types";
 import { Megaphone, Heart, Flower2, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
+import ShareButton from "./ShareButton";
 
 const categoryConfig: Record<NewsCategory, { label: string; color: string; icon: typeof Newspaper }> = {
   pr: { label: "ประชาสัมพันธ์", color: "bg-blue-100 text-blue-700", icon: Megaphone },
@@ -81,10 +82,13 @@ export default function NewsCard({ item }: { item: News }) {
       <div className="p-5">
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{item.title}</h3>
-          <span className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
-            <CatIcon size={14} />
-            {cfg.label}
-          </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <ShareButton title={item.title} description={item.content || undefined} />
+            <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
+              <CatIcon size={14} />
+              {cfg.label}
+            </span>
+          </div>
         </div>
         {item.content && (
           <p className="text-sm text-[#475569] whitespace-pre-wrap leading-relaxed">{item.content}</p>
