@@ -4,7 +4,6 @@ import type { Survey, SurveyOption, SurveyVote, SurveyImage } from "../lib/types
 import { Link } from "react-router-dom";
 import { BarChart3, Clock, CheckCircle2, Send, Loader2, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import ShareButton from "./ShareButton";
-import { ClickableImage } from "./ImageLightbox";
 
 interface Props {
   survey: Survey;
@@ -78,11 +77,10 @@ export default function SurveyCard({ survey, onVoted }: Props) {
       {/* Image Gallery */}
       {allImages.length > 0 && (
         <div className="relative bg-gray-100">
-          <ClickableImage
+          <img
             src={allImages[currentImage]}
             alt={`${survey.title} รูป ${currentImage + 1}`}
-            allImages={allImages}
-            className="w-full max-h-[300px]"
+            className="w-full max-h-[300px] object-contain"
           />
 
           {/* Navigation arrows */}

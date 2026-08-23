@@ -96,12 +96,12 @@ export default function SurveyDetailPage() {
       <div className="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm overflow-hidden">
         {/* Image Gallery */}
         {allImages.length > 0 && (
-          <div className="relative bg-gray-100">
+          <div className="relative bg-gray-100" style={{ maxHeight: "500px" }}>
             <ClickableImage
               src={allImages[currentImage]}
               alt={`${survey.title} รูป ${currentImage + 1}`}
               allImages={allImages}
-              className="w-full max-h-[500px]"
+              className="w-full h-auto"
             />
             {allImages.length > 1 && (
               <>
