@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
 import { ClickableImage } from "../components/ImageLightbox";
+import { usePageMeta } from "../lib/usePageMeta";
 
 export default function SurveyDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +22,12 @@ export default function SurveyDetailPage() {
   const [hasVoted, setHasVoted] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  usePageMeta({
+    title: survey?.title,
+    description: survey?.description || undefined,
+    image: survey?.image_url || undefined,
+  });
 
   useEffect(() => {
     if (!id) return;

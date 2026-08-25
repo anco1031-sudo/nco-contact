@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
 import { ClickableImage } from "../components/ImageLightbox";
+import { usePageMeta } from "../lib/usePageMeta";
 
 const categoryConfig: Record<NewsCategory, { label: string; color: string; icon: typeof Newspaper }> = {
   pr: { label: "ประชาสัมพันธ์", color: "bg-blue-100 text-blue-700", icon: Megaphone },
@@ -22,6 +23,12 @@ export default function NewsDetailPage() {
   const [images, setImages] = useState<NewsImage[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  usePageMeta({
+    title: item?.title,
+    description: item?.content || undefined,
+    image: images[0]?.image_url,
+  });
 
   useEffect(() => {
     if (!id) return;

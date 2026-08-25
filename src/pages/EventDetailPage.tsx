@@ -7,6 +7,7 @@ import {
   ClipboardList, CheckCircle2, Hourglass, CircleCheckBig,
 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
+import { usePageMeta } from "../lib/usePageMeta";
 
 const statusConfig: Record<EventStatus, { label: string; color: string; icon: typeof Calendar }> = {
   survey: { label: "สำรวจ", color: "bg-blue-100 text-blue-700", icon: ClipboardList },
@@ -21,6 +22,11 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventType | null>(null);
   const [loading, setLoading] = useState(true);
   const [countdown, setCountdown] = useState<number | null>(null);
+
+  usePageMeta({
+    title: event?.title,
+    description: event?.description || undefined,
+  });
 
   useEffect(() => {
     if (!id) return;
