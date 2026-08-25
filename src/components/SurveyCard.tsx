@@ -130,7 +130,7 @@ export default function SurveyCard({ survey, onVoted }: Props) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{survey.title}</h3>
           <div className="flex items-center gap-2 shrink-0">
-            <ShareButton title={survey.title} description={survey.description || undefined} />
+            <ShareButton title={survey.title} description={survey.description || undefined} url={`${window.location.origin}/surveys/${survey.id}`} />
             {isClosed ? (
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-600">
                 <CheckCircle2 size={14} /> ปิดโหวตแล้ว

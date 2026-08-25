@@ -87,7 +87,7 @@ export default function EventCard({ event, onEdit }: Props) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{event.title}</h3>
           <div className="flex items-center gap-2 shrink-0">
-            <ShareButton title={event.title} description={event.description || undefined} />
+            <ShareButton title={event.title} description={event.description || undefined} url={`${window.location.origin}/events/${event.id}`} />
             {event.status === "survey" && onEdit && (
               <button
                 onClick={() => onEdit(event)}

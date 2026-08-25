@@ -82,7 +82,7 @@ export default function NewsCard({ item }: { item: News }) {
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3 className="text-lg font-bold text-[#1e3a5f] leading-tight">{item.title}</h3>
           <div className="flex items-center gap-2 shrink-0">
-            <ShareButton title={item.title} description={item.content || undefined} />
+            <ShareButton title={item.title} description={item.content || undefined} url={`${window.location.origin}/news/${item.id}`} />
             <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${cfg.color}`}>
               <CatIcon size={14} />
               {cfg.label}
